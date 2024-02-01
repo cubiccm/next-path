@@ -1,6 +1,8 @@
 # Next PATH
 
-Port Authority Trans-Hudson trains real-time departure information. Created with [Next.js](https://nextjs.org/) and [React](https://react.dev/). Train data obtained from PANYNJ website. This project has no affiliation with Port Authority of New York and New Jersey.
+Port Authority Trans-Hudson trains real-time departure information. Created with [Next.js](https://nextjs.org/) and [React](https://react.dev/). Train data obtained from the PANYNJ website. This project has no affiliation with the Port Authority of New York and New Jersey.
+
+<img src="./assets/screenshot.jpg" alt="Screenshot" width="320"/>
 
 
 ## Serve Data
@@ -36,4 +38,4 @@ Additionally, to export a static website, execute:
 npm run build
 ```
 
-The web page relies partly on the client's system time to calculate departure information. All data is for reference purposes only, and is subject to real-world conditions.
+Click on the station name to change stations. The web page relies partly on the client's system time to calculate departure information. All data is for reference purposes only, and is subject to real-world conditions.
