@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./page.scss";
 import { station_info } from "./stations";
 import TrainList from "./train-list";
@@ -53,7 +53,10 @@ export default function Home() {
   
   const [load_state, setLoadState] = useState(LoadState.InProgress);
   const [current_station, setCurrentStation] = useState("WTC");
-  const [PATH_data, setPATHData] = useState(fetchData);
+  const [PATH_data, setPATHData] : [any, Function] = useState(() => {
+    fetchData();
+    return [];
+  });
   const [menu_state, setMenuState] = useState(false);
   const [value, setValue] = useState(() => {
     setInterval(() => {
@@ -62,7 +65,12 @@ export default function Home() {
     return false;
   });
 
-  function fetchData() {
+  useEffect(() => {
+    setCurrentStation(localStorage.getItem("last_station") || "WTC");
+    setMenuState(localStorage.getItem("last_station") === null);
+  }, [setCurrentStation, setMenuState]);
+
+  async function fetchData() {
     fetch(dataConfig.path_data_source, {
       method: "GET",
     }).then((response) => {
@@ -79,7 +87,7 @@ export default function Home() {
     }).catch((reason) => {
       setLoadState(LoadState.Failed);
     });
-    return null;
+    return [];
   }
   
   function processData(path_data: any) {
@@ -112,6 +120,20 @@ export default function Home() {
     }
     setPATHData(data);
   }
+
+  function changeStation(station: string) {
+    localStorage.setItem("last_station", station);
+    setCurrentStation(station);
+  }
+
+  function changeMenuVisibility(is_visible: boolean) {
+    if (is_visible) {
+      localStorage.removeItem("last_station");
+      setMenuState(true);
+    } else {
+      setMenuState(false);
+    }
+  }
   
   return (
     <main>
@@ -120,7 +142,7 @@ export default function Home() {
         direction={station_info[current_station]?.layout?.[0]["direction"] || "down"}
         destination={station_info[current_station]?.layout?.[0]["destination_sign"] || "New Jersey"}
       />}
-      <div className="platform" onClick={() => {setMenuState(true);}}>
+      <div className="platform" onClick={() => {changeMenuVisibility(true);}}>
         <span className={"platform__name" + (
           load_state == LoadState.Completed && station_info[current_station].name.length > 12 ? " platform__name--small" : ""
         )}>
@@ -137,7 +159,7 @@ export default function Home() {
         direction={station_info[current_station]?.layout?.[1]["direction"] || "up"}
         destination={station_info[current_station]?.layout?.[1]["destination_sign"] || "New York"}
       />}
-      {menu_state && <Menu station_handler={setCurrentStation} menu_handler={setMenuState}/>}
+      {menu_state && <Menu station_handler={changeStation} menu_handler={changeMenuVisibility}/>}
     </main>
   );
 }
