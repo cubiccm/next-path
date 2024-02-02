@@ -55,15 +55,12 @@ export default function Home() {
   const [current_station, setCurrentStation] = useState("WTC");
   const [PATH_data, setPATHData] : [any, Function] = useState(() => {
     fetchData();
-    return [];
-  });
-  const [menu_state, setMenuState] = useState(false);
-  const [value, setValue] = useState(() => {
     setInterval(() => {
       fetchData();
     }, 6000);
-    return false;
+    return [];
   });
+  const [menu_state, setMenuState] = useState(false);
 
   useEffect(() => {
     setCurrentStation(localStorage.getItem("last_station") || "WTC");
